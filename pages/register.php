@@ -1,27 +1,48 @@
-    <?php
-        $nameErr = $usernameErr = $passwdErr = $confirmPasswdErr = '';
-        $name = $username = '';
+<?php
+$nameErr = $usernameErr = $passwdErr = '';
+$name = $username = '';
+if (isset($_POST['name'], $_POST['username'], $_POST['passwd'], $_POST['confirmPasswd'])) {
+    $name = trim($_POST['name']);
+    $username = trim($_POST['username']);
+    $passwd = trim($_POST['passwd']);
+    $confirmPasswd = trim($_POST['confirmPasswd']);
 
-        if(isset($_POST['name'],$_POST['username'],$_POST['passwd'],$_POST['confirmPasswd'])){
-            $name = $_POST['name'];
-            $username = $_POST['username'];
-            $passwd = $_POST['passwd'];
-            $confirmPasswd = $_POST['confirmPasswd'];
-            if(empty($name)){
-                $nameErr = 'please input name!';
-            }
-            if(empty($username)){
-                $usernameErr = 'please input username!';
-            }
-            if(empty($passwd)){
-                $passwdErr = 'please input password!';
-            }
-            if(empty($confirmPasswd)){
-                $confirmPasswdErr = 'please input con$confirmPassword!';
-            }
-        }    
-    ?>
-    <form method="post" action="./?page=register" class="col-md-10 col-lg-6 mx-auto">
+    if (empty($name)) {
+        $nameErr = 'please input name!';
+    }
+
+    if (empty($username)) {
+        $usernameErr = 'please input username!';
+    }
+
+    if (empty($passwd)) {
+        $passwdErr = 'please input password!';
+    }
+
+    if ($passwd !== $confirmPasswd) {
+        $passwdErr = 'password does not match!';
+    }
+
+    if (usernameExists($username)) {
+        $usernameErr = 'please choose another username !';
+    }
+
+    if (empty($nameErr) && empty($usernameErr) && empty($passwdErr)) {
+        if (registerUser($name, $username, $passwd)) {
+            $name = $username = '';
+            echo '<div class="alert alert-success" role="alert">
+            A simple success alert—check it out!
+            </div>';
+        } else {
+            echo '<div class="alert alert-danger" role="alert">
+            A simple danger alert—check it out!
+            </div>';
+        }
+    }
+}
+?>
+?>
+<form method="post" action="./?page=register" class="col-md-10 col-lg-6 mx-auto">
     <h3>Register Page</h3>
     <div class="mb-3">
         <label class="form-label">Name</label>
